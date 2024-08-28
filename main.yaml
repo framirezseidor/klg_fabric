@@ -1,6 +1,6 @@
-  nane: Carga Codigo A S3
+name: Carga Codigo A S3
 
-  on: 
+on: 
     push:
       branches:
       - main 
