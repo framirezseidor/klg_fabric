@@ -1,9 +1,9 @@
-name: Carga Codigo A S3
+name: Carga Codigo A carpeta S3
 
 on: 
     push:
       branches:
-      - main 
+      - Fidel
 
 #jobs:
 #  deploy:
