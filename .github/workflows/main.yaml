@@ -17,6 +17,7 @@ jobs:
         AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
         AWS_ACCESS_KEY_ID : ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ 'pBKh9dnw9CCiMiLaS+iNX9lF2ivgdjBRiVtebN8V' }} 
+        
 # jobs:
 #   approve-and-deploy:
 #     runs-on: ubuntu-latest
