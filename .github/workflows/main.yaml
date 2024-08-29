@@ -24,7 +24,7 @@ jobs:
 
     # This step would be skipped unless PR is approved and merged
     - name: Deploy to S3
-      if: github.event.pull_request.merged == true
+      #if: github.event.pull_request.merged == true
       run: |
         aws s3 sync . s3://prueba-carga-codigo/test1-codeoncarpet-s3/ --delete
       env:      
