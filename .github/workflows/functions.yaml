@@ -1,0 +1,49 @@
+name: Deploy Lambda and Glue Jobs
+
+on:
+  push:
+    branches:
+      - main  # Cambia esto según tu rama principal
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    # Despliegue de Funciones Lambda
+    - name: Deploy Lambda functions
+      run: |
+        for dir in ./lambda/*; do
+          if [ -d "$dir" ]; then
+            zip -r9 "$dir".zip "$dir"/*
+            aws lambda update-function-code \
+              --function-name $(basename $dir) \
+              --zip-file fileb://"$dir".zip
+          fi
+        done
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: us-east-1  # Cambia la región si es necesario
+
+    # Despliegue de trabajos de AWS Glue
+    - name: Deploy Glue ETLs
+      run: |
+        for script in ./glue-scripts/*; do
+          job_name=$(basename "$script" .py)
+          aws glue create-job \
+            --name "$job_name" \
+            --role AWSGlueServiceRole \
+            --command Name=glueetl,ScriptLocation="s3://your-bucket-name/$job_name.py" \
+            --region ${{ secrets.AWS_REGION }} || \
+          aws glue update-job \
+            --job-name "$job_name" \
+            --job-update "{\"Command\": {\"Name\": \"glueetl\", \"ScriptLocation\": \"s3://your-bucket-name/$job_name.py\"}}"
+        done
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: us-east-1  # Cambia la región si es necesario
